@@ -18,9 +18,8 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
-            if [ ! -d "/srv/apache-cicd/.git" ]; then
-              git clone https://github.com/${{ github.repository }} /srv/apache-cicd
-            fi
-            cd /srv/apache-cicd
-            git pull origin main
-            docker-compose up -d --build
+        cd /srv/apache-cicd
+        git pull origin main
+        # Forzamos la parada (sin que falle el script si no existe) y reconstruimos
+        docker-compose down || true
+        docker-compose up -d --build --force-recreate
